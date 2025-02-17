@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Today</string>
+
+    <string name="str_today">Today</string>
+    <string name="str_settings">Settings</string>
+    <string name="str_lan">Language</string>
+    <string name="str_theme">Theme</string>
+    <string name="str_ru">RU</string>
+    <string name="str_eng">ENG</string>
+    <string name="str_dark">dark</string>
+    <string name="str_light">light</string>
+    <string name="str_add_categ">Add new category</string>
+    <string name="str_delete_all">Delete all</string>
+    <string name="str_grapth">Graphs</string>
+
+    <string name="str_week">Week</string>
+    <string name="str_month">Month</string>
+    <string name="str_year">Year</string>
+</resources>
