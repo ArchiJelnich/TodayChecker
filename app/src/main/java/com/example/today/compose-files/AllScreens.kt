@@ -1,5 +1,6 @@
 package com.example.today.compose
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,7 +28,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -40,11 +43,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.today.CategoryViewModel
 import com.example.today.R
+import com.example.today.room.AppDatabase
+import com.example.today.room.CategoryDao
+import kotlinx.coroutines.flow.SharingStarted
 import kotlin.random.Random
 
 @Composable
-fun TodayScreen() {
+fun TodayScreen(viewModel: CategoryViewModel) {
+
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             text = stringResource(R.string.str_today),
@@ -56,13 +66,21 @@ fun TodayScreen() {
             textAlign = TextAlign.Center
         )
 
-        val categories = listOf("Work", "Study", "Exercise", "Relax", "Hobby", "1", "2", "3", "4", "123", "sdas", "as") // TEMPORARY ZAGLUSHKA
+        val categories_old = listOf("Work", "Study", "Exercise", "Relax", "Hobby", "1", "2", "3", "4", "123", "sdas", "as") // TEMPORARY ZAGLUSHKA
+        val categories by viewModel.categories.collectAsState()
 
         LazyColumn(
             modifier = Modifier.weight(1f)
-        ) {
+        )  {
             items(categories) { category ->
-                CategoryItem(category = category)
+                category.cName?.let {
+                    category.cColor?.let { it1 ->
+                        CategoryItem(
+                            cName = it,
+                            cColor = it1
+                        )
+                    }
+                }
             }
         }
 
@@ -71,9 +89,10 @@ fun TodayScreen() {
 }
 
 @Composable
-fun CategoryItem(category: String) {
-    var count by remember { mutableStateOf(0) }
-    val circleColor = listOf(colorResource(R.color.test))
+fun CategoryItem(cName: String, cColor : Long) {
+    var count by remember { mutableIntStateOf(0) }
+    val circleColor = Color(cColor)
+    //val circleColor = Color(cColor.toLong())
 
     Row(
         modifier = Modifier
@@ -86,10 +105,10 @@ fun CategoryItem(category: String) {
             modifier = Modifier
                 .size(40.dp)
                 .clip(RoundedCornerShape(30.dp))
-                .background(circleColor[0]),
+                .background(circleColor),
         )
 
-        Text(text = category, modifier = Modifier.padding(start = 16.dp))
+        Text(text = cName, modifier = Modifier.padding(start = 16.dp))
         Spacer(modifier = Modifier.weight(1f))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -102,11 +121,7 @@ fun CategoryItem(category: String) {
 
 
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewTodayScreen() {
-    TodayScreen()
-}
+
 
 
 ////////////////////////////////

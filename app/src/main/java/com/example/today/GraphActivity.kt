@@ -24,7 +24,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.example.today.compose.BottomPanel
 import com.example.today.compose.GraphScreen
-import kotlin.random.Random
 
 class GraphActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
