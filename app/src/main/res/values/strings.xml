@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Today</string>
-
     <string name="str_today">Today</string>
     <string name="str_settings">Settings</string>
     <string name="str_lan">Language</string>
@@ -12,8 +11,12 @@
     <string name="str_add_categ">Add new category</string>
     <string name="str_delete_all">Delete all</string>
     <string name="str_grapth">Graphs</string>
-
     <string name="str_week">Week</string>
     <string name="str_month">Month</string>
     <string name="str_year">Year</string>
+    <string name="str_OK">OK!</string>
+    <string name="str_header">Welcome to the Relaxed Time Tracker!</string>
+    <string name="str_body">Choose a color for each activity, mark the number of slots spent on it per day, and check your stats.
+        \nI recommend treating a slot as a time period ranging from half an hour to an hour.
+        \nWe are not here for anxious minute-by-minute tracking, but rather for visualizing and evaluating your activity! :)</string>
 </resources>

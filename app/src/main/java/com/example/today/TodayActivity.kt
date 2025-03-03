@@ -1,6 +1,7 @@
 package com.example.today
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -10,6 +11,7 @@ import com.example.today.ui.theme.TodayTheme
 import androidx.compose.material3.*
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.preference.PreferenceManager
 import com.example.today.compose.TodayScreen
 import com.example.today.room.AppDatabase
 import com.example.today.room.Category
@@ -41,13 +43,32 @@ class TodayActivity : ComponentActivity() {
             }
         }
 
-        /*
+
+
+
+
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         var sp_language = preferences.getString("language", "eng")
         val sp_theme = preferences.getString("theme", "black")
-        val sp_new_page = preferences.getString("new_page", "1")
-        val sp_edited = preferences.getString("edited", "0")
+        val sp_new_page = preferences.getInt("new_page", 1)
+        val sp_edited = preferences.getInt("edited", 0)
+        if (sp_new_page == 1)
+        {
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
+            builder
+                .setMessage(getString(R.string.str_body))
+                .setTitle(getString(R.string.str_header))
+                .setPositiveButton(R.string.str_OK) { _, _ ->
+                    // No action
+                }
+
+            val dialog: AlertDialog = builder.create()
+            dialog.show()
+            preferences.edit().putInt("new_page", 0).apply()
+        }
+
+        /*
         Log.d("MyDebug", sp_language + " " + sp_theme + " " + sp_new_page + " " + sp_edited)
         preferences.edit().putString("language", "ru").apply()
         sp_language = preferences.getString("language", "eng")
