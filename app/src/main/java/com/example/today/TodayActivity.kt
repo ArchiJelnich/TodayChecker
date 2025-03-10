@@ -2,17 +2,28 @@ package com.example.today
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import com.example.today.ui.theme.TodayTheme
 import androidx.compose.material3.*
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.example.today.compose.TodayScreen
+import com.example.today.infra.DateToString
+import com.example.today.infra.StrringToDate
+import com.example.today.infra.flagGet
+import com.example.today.infra.flagJSON
+import com.example.today.infra.flagPut
+import com.example.today.infra.getMapFromSharedPreferences
 import com.example.today.room.AppDatabase
 import com.example.today.room.Category
 import com.example.today.room.CategoryDao
@@ -20,9 +31,11 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class TodayActivity : ComponentActivity() {
-    @SuppressLint("CoroutineCreationDuringComposition")
+    @RequiresApi(Build.VERSION_CODES.O)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -34,11 +47,11 @@ class TodayActivity : ComponentActivity() {
                     val categoryDao = db.CategoryDao()
                     val categoryViewModel = CategoryViewModel(categoryDao)
 
-                    GlobalScope.launch  {
-                        Log.d("MyDebug", categoryDao.getAll().toString())
-                        }
-
+                    flagPut(this, 0)
+                    flagJSON(this)
                     TodayScreen(viewModel = categoryViewModel)
+
+
                 }
             }
         }
@@ -69,6 +82,19 @@ class TodayActivity : ComponentActivity() {
         }
 
         /*
+        val today = LocalDate.now()
+        val today_to_string = DateToString(today)
+        val today_back_to_date = StrringToDate(today_to_string)
+        val test_obj = today_back_to_date.plusDays(38)
+
+        Log.d("MyDebug", today.toString())
+        Log.d("MyDebug", today_to_string.toString())
+        Log.d("MyDebug", today_back_to_date.toString())
+        Log.d("MyDebug", test_obj.toString())
+
+*/
+
+        /*
         Log.d("MyDebug", sp_language + " " + sp_theme + " " + sp_new_page + " " + sp_edited)
         preferences.edit().putString("language", "ru").apply()
         sp_language = preferences.getString("language", "eng")
@@ -76,8 +102,8 @@ class TodayActivity : ComponentActivity() {
 
          */
 
-
-            /* val db: AppDatabase = AppDatabase.getInstance(this)
+/*
+             val db: AppDatabase = AppDatabase.getInstance(this)
 
          val categoryDao = db.CategoryDao()
          GlobalScope.launch  {
@@ -110,16 +136,33 @@ class TodayActivity : ComponentActivity() {
              categoryDao.insertAll(category)
              categoryDao.insertAll(category_1)
              categoryDao.insertAll(category_2)
+             categoryDao.insertAll(category_3)
              Log.d("MyDebug", categoryDao.getAll().toString())
 
 }
+        */
 
 
-*/
+
 
  }
 
+    override fun onPause() {
+        super.onPause()
+        val edit_flag = flagGet(this)
+        if (edit_flag==0)
+        {
+            Log.d("MyDebug", "No changes")
+        }
+        else         {
+            Log.d("MyDebug", "Changes!")
+            Log.d("MyDebug", getMapFromSharedPreferences(this).toString())
+        }
 
+
+
+
+        }
 
 }
 
@@ -134,4 +177,6 @@ class CategoryViewModel(private val dao: CategoryDao) : ViewModel() {
             _categories.value = dao.getNotDeleted()
         }
     }
+
 }
+

@@ -67,6 +67,8 @@ dependencies {
     implementation(libs.androidx.room.common)
     implementation(libs.androidx.adapters)
     implementation(libs.androidx.room.ktx)
+    implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.gson)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -79,5 +81,6 @@ dependencies {
     implementation (libs.androidx.lifecycle.viewmodel.ktx)
     implementation (libs.kotlinx.coroutines.core)
     implementation (libs.kotlinx.coroutines.android)
+
 
 }

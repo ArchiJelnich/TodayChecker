@@ -1,6 +1,7 @@
 package com.example.today.compose
 
 import android.content.Context
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -38,6 +41,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +51,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.today.CategoryViewModel
 import com.example.today.R
+import com.example.today.infra.flagPut
+import com.example.today.infra.updateMap
 import com.example.today.room.AppDatabase
 import com.example.today.room.CategoryDao
 import kotlinx.coroutines.flow.SharingStarted
@@ -54,6 +60,7 @@ import kotlin.random.Random
 
 @Composable
 fun TodayScreen(viewModel: CategoryViewModel) {
+
 
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
@@ -66,18 +73,20 @@ fun TodayScreen(viewModel: CategoryViewModel) {
             textAlign = TextAlign.Center
         )
 
-        val categories_old = listOf("Work", "Study", "Exercise", "Relax", "Hobby", "1", "2", "3", "4", "123", "sdas", "as") // TEMPORARY ZAGLUSHKA
+        //val categories_old = listOf("Work", "Study", "Exercise", "Relax", "Hobby", "1", "2", "3", "4", "123", "sdas", "as") // TEMPORARY ZAGLUSHKA
         val categories by viewModel.categories.collectAsState()
 
         LazyColumn(
             modifier = Modifier.weight(1f)
-        )  {
+        ) {
             items(categories) { category ->
                 category.cName?.let {
                     category.cColor?.let { it1 ->
                         CategoryItem(
                             cName = it,
-                            cColor = it1
+                            cColor = it1,
+                            cID = category.cID,
+                            viewModel = viewModel
                         )
                     }
                 }
@@ -86,13 +95,17 @@ fun TodayScreen(viewModel: CategoryViewModel) {
 
         BottomPanel()
     }
+
+
 }
 
 @Composable
-fun CategoryItem(cName: String, cColor : Long) {
+fun CategoryItem(cName: String, cColor : Long, viewModel: CategoryViewModel, cID : Int) {
     var count by remember { mutableIntStateOf(0) }
     val circleColor = Color(cColor)
+    val context = LocalContext.current
     //val circleColor = Color(cColor.toLong())
+
 
     Row(
         modifier = Modifier
@@ -111,12 +124,15 @@ fun CategoryItem(cName: String, cColor : Long) {
         Text(text = cName, modifier = Modifier.padding(start = 16.dp))
         Spacer(modifier = Modifier.weight(1f))
 
+
+
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Button(onClick = { if (count > 0) count-- }) { Text("-") }
+            Button(onClick = { if (count > 0) { count--; flagPut(context, 1); updateMap(context, cID, count) } }) { Text("-") }
             Text(text = count.toString(), modifier = Modifier.padding(horizontal = 8.dp))
-            Button(onClick = { count++ }) { Text("+") }
+            Button(onClick = { count++; flagPut(context, 1); updateMap(context, cID, count) }) { Text("+") }
         }
     }
+
 }
 
 

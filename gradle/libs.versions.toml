@@ -14,6 +14,8 @@ preferenceKtxVersion = "1.2.1"
 roomCommonVersion = "2.6.1"
 adaptersVersion = "3.2.0-alpha11"
 roomCompilerVersion = "2.6.1"
+firebaseCrashlyticsBuildtoolsVersion = "3.0.3"
+gsonVersion = "2.12.1"
 
 [libraries]
 androidx-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compiler" }
@@ -41,6 +43,8 @@ kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutine
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCoreVersion" }
 room-compiler = { module = "androidx.room:room-compiler" }
 room-runtime = { module = "androidx.room:room-runtime" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtoolsVersion" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gsonVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
