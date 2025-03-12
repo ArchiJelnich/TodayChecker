@@ -24,9 +24,12 @@ import com.example.today.infra.flagGet
 import com.example.today.infra.flagJSON
 import com.example.today.infra.flagPut
 import com.example.today.infra.getMapFromSharedPreferences
+import com.example.today.infra.lastDateGet
+import com.example.today.infra.lastDatePut
 import com.example.today.room.AppDatabase
 import com.example.today.room.Category
 import com.example.today.room.CategoryDao
+import com.example.today.room.DateInfo
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -147,16 +150,49 @@ class TodayActivity : ComponentActivity() {
 
  }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onPause() {
         super.onPause()
         val edit_flag = flagGet(this)
         if (edit_flag==0)
         {
-            Log.d("MyDebug", "No changes")
+            //Log.d("MyDebug", "No changes")
         }
         else         {
-            Log.d("MyDebug", "Changes!")
-            Log.d("MyDebug", getMapFromSharedPreferences(this).toString())
+            //Log.d("MyDebug", "Changes!")
+            val db: AppDatabase = AppDatabase.getInstance(this)
+            val dateInfoDao = db.DateInfoDao()
+            val date_today = DateToString(LocalDate.now())
+            val date_info = getMapFromSharedPreferences(this).toString()
+
+            if (lastDateGet(this).equals(DateToString(LocalDate.now()))){
+                //Log.d("MyDebug", "It was today")
+                GlobalScope.launch  {
+                    dateInfoDao.update(date_info = date_info, date = date_today)
+                }
+
+            } else
+            {
+                //Log.d("MyDebug", "It wasn't today")
+                val dateInfo_new = DateInfo(
+                    dID = 0,
+                    date = date_today,
+                    date_info = date_info
+                )
+                GlobalScope.launch  {
+                    dateInfoDao.insert(dateInfo_new)
+                }
+
+                lastDatePut(this)
+            }
+
+
+            //GlobalScope.launch  {
+            //   Log.d("MyDebug", dateInfoDao.getAllDate().toString() )
+            //}
+
+
+
         }
 
 

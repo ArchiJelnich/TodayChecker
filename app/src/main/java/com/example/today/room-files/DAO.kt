@@ -1,7 +1,6 @@
 package com.example.today.room
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -21,4 +20,9 @@ interface CategoryDao {
 interface DateInfoDao {
     @Query("SELECT * FROM DateInfo")
     fun getAllDate(): List<DateInfo>
+    @Insert
+    fun insert(vararg dateInfo: DateInfo)
+    @Query("UPDATE dateInfo SET date_info = :date_info WHERE date =:date")
+    fun update(date_info: String, date: String)
+
 }
