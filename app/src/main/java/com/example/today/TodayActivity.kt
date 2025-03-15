@@ -11,15 +11,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import com.example.today.ui.theme.TodayTheme
 import androidx.compose.material3.*
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.example.today.compose.TodayScreen
 import com.example.today.infra.DateToString
-import com.example.today.infra.StrringToDate
 import com.example.today.infra.flagGet
 import com.example.today.infra.flagJSON
 import com.example.today.infra.flagPut
@@ -30,6 +26,8 @@ import com.example.today.room.AppDatabase
 import com.example.today.room.Category
 import com.example.today.room.CategoryDao
 import com.example.today.room.DateInfo
+import com.example.today.room.DateInfoDao
+import com.google.gson.Gson
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -37,22 +35,48 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class TodayActivity : ComponentActivity() {
+    @SuppressLint("CoroutineCreationDuringComposition")
     @RequiresApi(Build.VERSION_CODES.O)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+
+        val db: AppDatabase = AppDatabase.getInstance(this)
+        val dateInfoDao = db.DateInfoDao()
+        val dateToday = DateToString(LocalDate.now())
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = preferences.edit()
+
+        GlobalScope.launch  {
+            val dateInfo = dateInfoDao.getDateInfoByDay(dateToday)
+            editor.putString("date_info_today", dateInfo)
+            editor.apply()
+        }
+
         setContent {
             TodayTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
 
-                    val db: AppDatabase = AppDatabase.getInstance(this)
+                    //val date_info_map = getMapFromSharedPreferences(this)
+
+
+
+
+                    val dateInfo = preferences.getString("date_info_today", "{}")
                     val categoryDao = db.CategoryDao()
                     val categoryViewModel = CategoryViewModel(categoryDao)
 
+
+                    if (lastDateGet(this)!=dateToday) {
+                        flagJSON(this)
+                    }
+
                     flagPut(this, 0)
-                    flagJSON(this)
-                    TodayScreen(viewModel = categoryViewModel)
+                    if (dateInfo != null) {
+                        TodayScreen(viewModel = categoryViewModel, dateInfo)
+                    }
 
 
                 }
@@ -64,12 +88,12 @@ class TodayActivity : ComponentActivity() {
 
 
 
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        var sp_language = preferences.getString("language", "eng")
-        val sp_theme = preferences.getString("theme", "black")
-        val sp_new_page = preferences.getInt("new_page", 1)
-        val sp_edited = preferences.getInt("edited", 0)
-        if (sp_new_page == 1)
+        //val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        //var spLanguage = preferences.getString("language", "eng")
+        //val spTheme = preferences.getString("theme", "black")
+        val spNewPage = preferences.getInt("new_page", 1)
+        //val spEdited = preferences.getInt("edited", 0)
+        if (spNewPage == 1)
         {
             val builder: AlertDialog.Builder = AlertDialog.Builder(this)
             builder
@@ -83,6 +107,9 @@ class TodayActivity : ComponentActivity() {
             dialog.show()
             preferences.edit().putInt("new_page", 0).apply()
         }
+
+
+
 
         /*
         val today = LocalDate.now()
@@ -162,13 +189,13 @@ class TodayActivity : ComponentActivity() {
             //Log.d("MyDebug", "Changes!")
             val db: AppDatabase = AppDatabase.getInstance(this)
             val dateInfoDao = db.DateInfoDao()
-            val date_today = DateToString(LocalDate.now())
-            val date_info = getMapFromSharedPreferences(this).toString()
+            val dateToday = DateToString(LocalDate.now())
+            val dateInfo = getMapFromSharedPreferences(this).toString()
 
             if (lastDateGet(this).equals(DateToString(LocalDate.now()))){
                 //Log.d("MyDebug", "It was today")
                 GlobalScope.launch  {
-                    dateInfoDao.update(date_info = date_info, date = date_today)
+                    dateInfoDao.update(date_info = dateInfo, date = dateToday)
                 }
 
             } else
@@ -176,20 +203,21 @@ class TodayActivity : ComponentActivity() {
                 //Log.d("MyDebug", "It wasn't today")
                 val dateInfo_new = DateInfo(
                     dID = 0,
-                    date = date_today,
-                    date_info = date_info
+                    date = dateToday,
+                    date_info = dateInfo
                 )
                 GlobalScope.launch  {
                     dateInfoDao.insert(dateInfo_new)
                 }
 
+
                 lastDatePut(this)
             }
 
 
-            //GlobalScope.launch  {
-            //   Log.d("MyDebug", dateInfoDao.getAllDate().toString() )
-            //}
+            GlobalScope.launch  {
+               Log.d("MyDebug", " -- onPause -- " + dateInfoDao.getAllDate().toString() )
+            }
 
 
 
@@ -204,7 +232,9 @@ class TodayActivity : ComponentActivity() {
 
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 class CategoryViewModel(private val dao: CategoryDao) : ViewModel() {
+
     private val _categories = MutableStateFlow<List<Category>>(emptyList())
     val categories: StateFlow<List<Category>> get() = _categories
 
@@ -212,7 +242,10 @@ class CategoryViewModel(private val dao: CategoryDao) : ViewModel() {
         viewModelScope.launch {
             _categories.value = dao.getNotDeleted()
         }
+
     }
+
+
 
 }
 

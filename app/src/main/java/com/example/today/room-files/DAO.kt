@@ -20,6 +20,8 @@ interface CategoryDao {
 interface DateInfoDao {
     @Query("SELECT * FROM DateInfo")
     fun getAllDate(): List<DateInfo>
+    @Query("SELECT date_info FROM DateInfo WHERE date=:date")
+    fun getDateInfoByDay(date: String): String
     @Insert
     fun insert(vararg dateInfo: DateInfo)
     @Query("UPDATE dateInfo SET date_info = :date_info WHERE date =:date")

@@ -1,7 +1,8 @@
 package com.example.today.compose
 
-import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,8 +30,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -42,24 +41,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.today.CategoryViewModel
 import com.example.today.R
 import com.example.today.infra.flagPut
+import com.example.today.infra.parseMapFromString
 import com.example.today.infra.updateMap
-import com.example.today.room.AppDatabase
-import com.example.today.room.CategoryDao
-import kotlinx.coroutines.flow.SharingStarted
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlin.random.Random
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TodayScreen(viewModel: CategoryViewModel) {
+fun TodayScreen(viewModel: CategoryViewModel, date_info : String) {
 
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -86,7 +83,8 @@ fun TodayScreen(viewModel: CategoryViewModel) {
                             cName = it,
                             cColor = it1,
                             cID = category.cID,
-                            viewModel = viewModel
+                            viewModel = viewModel,
+                            dateInfo = date_info
                         )
                     }
                 }
@@ -100,8 +98,23 @@ fun TodayScreen(viewModel: CategoryViewModel) {
 }
 
 @Composable
-fun CategoryItem(cName: String, cColor : Long, viewModel: CategoryViewModel, cID : Int) {
-    var count by remember { mutableIntStateOf(0) }
+fun CategoryItem(cName: String, cColor: Long, viewModel: CategoryViewModel, cID: Int, dateInfo : String) {
+
+    var initialCount = 0
+
+    if (dateInfo != "{}") {
+        val dateInfMap = parseMapFromString(dateInfo)
+        if (dateInfMap[cID]!=null)
+        {
+            initialCount = dateInfMap[cID]!!
+        }
+    }
+
+
+
+    //Log.d("MyDebug", " -- CategoryItem -- " + cID + " " + initialCount)
+
+    var count by remember { mutableIntStateOf(initialCount) }
     val circleColor = Color(cColor)
     val context = LocalContext.current
     //val circleColor = Color(cColor.toLong())

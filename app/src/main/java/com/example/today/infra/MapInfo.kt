@@ -27,3 +27,13 @@ fun updateMap(context: Context, key: Int, count : Int){
     map[key] = count
     saveMapToSharedPreferences(context, map)
 }
+
+fun parseMapFromString(input: String): Map<Int, Int> {
+    return input
+        .removeSurrounding("{", "}")
+        .split(", ")
+        .associate {
+            val (key, value) = it.split("=")
+            key.toInt() to value.toInt()
+        }
+}
