@@ -1,6 +1,7 @@
 package com.example.today.infra
 
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import java.time.LocalDate
 
@@ -11,9 +12,12 @@ fun DateToString(date: LocalDate): String {
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun StrringToDate(date_string: String) : LocalDate
+fun StringToDate(date_string: String) : LocalDate
 {
     val dateArrayList = date_string.split(".")
+
+    Log.d("MyDebug", "dateArrayList " + dateArrayList.toString())
+
     val year = dateArrayList[2].toInt()
     val month = dateArrayList[1].toInt()
     val day = dateArrayList[0].toInt()

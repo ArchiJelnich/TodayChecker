@@ -26,5 +26,6 @@ interface DateInfoDao {
     fun insert(vararg dateInfo: DateInfo)
     @Query("UPDATE dateInfo SET date_info = :date_info WHERE date =:date")
     fun update(date_info: String, date: String)
-
+    @Query("SELECT dID FROM DateInfo WHERE date=:date")
+    fun getIDByDay(date: String): Int
 }

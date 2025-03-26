@@ -1,5 +1,6 @@
 package com.example.today.compose
 
+import android.content.Intent
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
@@ -47,6 +48,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.today.CategoryViewModel
 import com.example.today.R
+import com.example.today.TodayActivity
+import com.example.today.infra.StringToDate
 import com.example.today.infra.flagPut
 import com.example.today.infra.parseMapFromString
 import com.example.today.infra.updateMap
@@ -56,19 +59,51 @@ import kotlin.random.Random
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TodayScreen(viewModel: CategoryViewModel, date_info : String) {
+fun TodayScreen(viewModel: CategoryViewModel, date_info : String, date_asset: Int, dateText : String) {
 
 
-    Column(modifier = Modifier.fillMaxSize()) {
-        Text(
-            text = stringResource(R.string.str_today),
-            style = MaterialTheme.typography.headlineLarge,
-            modifier = Modifier
-                .align(alignment = Alignment.CenterHorizontally)
-                .padding(top = 40.dp)
-                .padding(bottom = 40.dp),
-            textAlign = TextAlign.Center
-        )
+    Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+
+
+        var asset = date_asset
+        val context = LocalContext.current
+        var firts_day_check = 0
+
+       // StringToDate(dateText)
+
+       // Log.d("MyDebug", "StringToDate(dateText)" + StringToDate(dateText).toString())
+
+        if (asset!=0 && StringToDate(dateText).dayOfMonth==1)
+        {
+            firts_day_check = 1
+        }
+
+        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Absolute.Center) {
+            if (firts_day_check == 0){
+            Button(onClick = {
+                asset--;
+                Log.d("MyDebug", "new asset" + asset)
+                val intent = Intent(context, TodayActivity::class.java)
+                intent.putExtra("asset", asset)
+                context.startActivity(intent)
+            }) { Text("<") }}
+            Text(
+                text = dateText,
+                style = MaterialTheme.typography.headlineLarge,
+                modifier = Modifier
+                    .padding(top = 40.dp)
+                    .padding(bottom = 40.dp),
+                textAlign = TextAlign.Center
+            )
+            if (asset != 0){
+            Button(onClick = {
+                asset++;
+                Log.d("MyDebug", "new asset" + asset)
+                val intent = Intent(context, TodayActivity::class.java)
+                intent.putExtra("asset", asset)
+                context.startActivity(intent)
+            }) { Text(">") }}
+        }
 
         //val categories_old = listOf("Work", "Study", "Exercise", "Relax", "Hobby", "1", "2", "3", "4", "123", "sdas", "as") // TEMPORARY ZAGLUSHKA
         val categories by viewModel.categories.collectAsState()
