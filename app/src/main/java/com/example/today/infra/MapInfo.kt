@@ -35,3 +35,13 @@ fun parseMapFromString(input: String): Map<Int, Int> {
             key.toInt() to value.toInt()
         }
 }
+
+fun parseMapFromStringDouble(input: String): Map<Int, Double> {
+    return input
+        .removeSurrounding("{", "}")
+        .split(", ")
+        .associate {
+            val (key, value) = it.split("=")
+            key.toInt() to value.toDouble()
+        }
+}

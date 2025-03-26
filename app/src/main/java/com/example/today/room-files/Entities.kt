@@ -17,6 +17,9 @@ data class DateInfo(
     @PrimaryKey(autoGenerate = true) var dID: Int,
     @ColumnInfo(name = "date") val date: String?,
     @ColumnInfo(name = "date_info") val date_info: String?,
+    @ColumnInfo(name = "day") val day: String?,
+    @ColumnInfo(name = "month") val month: String?,
+    @ColumnInfo(name = "year") val year: String?,
 )
 
 @Entity(tableName = "AverageInfo")

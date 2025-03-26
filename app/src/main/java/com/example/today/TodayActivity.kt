@@ -21,6 +21,7 @@ import com.example.today.infra.flagPut
 import com.example.today.infra.getMapFromSharedPreferences
 import com.example.today.infra.lastDateGet
 import com.example.today.infra.parseMapFromString
+import com.example.today.infra.stringToDate
 import com.example.today.room.AppDatabase
 import com.example.today.room.Category
 import com.example.today.room.CategoryDao
@@ -149,10 +150,10 @@ class TodayActivity : ComponentActivity() {
 
          */
 
-/*
-             val db: AppDatabase = AppDatabase.getInstance(this)
 
-         val categoryDao = db.CategoryDao()
+            // val db: AppDatabase = AppDatabase.getInstance(this)
+
+        /* val categoryDao = db.CategoryDao()
          GlobalScope.launch  {
              val category = Category(
                  cID = 0,
@@ -187,7 +188,7 @@ class TodayActivity : ComponentActivity() {
              Log.d("MyDebug", categoryDao.getAll().toString())
 
 }
-        */
+*/
 
 
 
@@ -208,6 +209,7 @@ class TodayActivity : ComponentActivity() {
                 dateAsset =  intent.extras?.get("asset") as Int
             }
             val dateToday = dateToString(LocalDate.now().plusDays(dateAsset.toLong()))
+            val dateTodayDater = stringToDate(dateToday)
             val dateInfoMap = getMapFromSharedPreferences(this)
             val dateInfo = getMapFromSharedPreferences(this).toString()
 
@@ -238,7 +240,10 @@ class TodayActivity : ComponentActivity() {
                     val dateinfoNew = DateInfo(
                         dID = 0,
                         date = dateToday,
-                        date_info = dateInfo
+                        date_info = dateInfo,
+                        day = dateTodayDater.dayOfMonth.toString(),
+                        month = dateTodayDater.monthValue.toString(),
+                        year = dateTodayDater.year.toString()
                     )
                     dateInfoDao.insert(dateinfoNew)
                 }

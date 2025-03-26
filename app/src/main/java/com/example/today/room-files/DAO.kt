@@ -28,6 +28,12 @@ interface DateInfoDao {
     fun update(date_info: String, date: String)
     @Query("SELECT dID FROM DateInfo WHERE date=:date")
     fun getIDByDay(date: String): Int
+    @Query("SELECT * FROM DateInfo WHERE year=:year")
+    fun getIDByYear(year: Int): List<DateInfo>
+    @Query("SELECT * FROM DateInfo WHERE month=:month")
+    fun getIDByMonth(month: Int): List<DateInfo>
+    @Query("SELECT * FROM DateInfo WHERE date=:date")
+    fun getIDByDate(date: String): DateInfo
 }
 
 @Dao
