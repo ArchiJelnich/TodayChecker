@@ -49,39 +49,37 @@ import androidx.compose.ui.unit.dp
 import com.example.today.CategoryViewModel
 import com.example.today.R
 import com.example.today.TodayActivity
-import com.example.today.infra.StringToDate
+import com.example.today.infra.stringToDate
 import com.example.today.infra.flagPut
 import com.example.today.infra.parseMapFromString
 import com.example.today.infra.updateMap
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlin.random.Random
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TodayScreen(viewModel: CategoryViewModel, date_info : String, date_asset: Int, dateText : String) {
+fun TodayScreen(viewModel: CategoryViewModel, dateInfo : String, dateAsset: Int, dateText : String) {
 
 
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
 
 
-        var asset = date_asset
+        var asset = dateAsset
         val context = LocalContext.current
-        var firts_day_check = 0
+        var firstDayCheck = 0
 
        // StringToDate(dateText)
 
        // Log.d("MyDebug", "StringToDate(dateText)" + StringToDate(dateText).toString())
 
-        if (asset!=0 && StringToDate(dateText).dayOfMonth==1)
+        if (asset!=0 && stringToDate(dateText).dayOfMonth==1)
         {
-            firts_day_check = 1
+            firstDayCheck = 1
         }
 
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Absolute.Center) {
-            if (firts_day_check == 0){
+            if (firstDayCheck == 0){
             Button(onClick = {
-                asset--;
+                asset--
                 Log.d("MyDebug", "new asset" + asset)
                 val intent = Intent(context, TodayActivity::class.java)
                 intent.putExtra("asset", asset)
@@ -97,7 +95,7 @@ fun TodayScreen(viewModel: CategoryViewModel, date_info : String, date_asset: In
             )
             if (asset != 0){
             Button(onClick = {
-                asset++;
+                asset++
                 Log.d("MyDebug", "new asset" + asset)
                 val intent = Intent(context, TodayActivity::class.java)
                 intent.putExtra("asset", asset)
@@ -119,7 +117,7 @@ fun TodayScreen(viewModel: CategoryViewModel, date_info : String, date_asset: In
                             cColor = it1,
                             cID = category.cID,
                             viewModel = viewModel,
-                            dateInfo = date_info
+                            dateInfo = dateInfo
                         )
                     }
                 }

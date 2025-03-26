@@ -10,19 +10,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.example.today.compose.TodayScreen
-import com.example.today.infra.DateToString
+import com.example.today.infra.dateToString
 import com.example.today.infra.flagGet
 import com.example.today.infra.flagJSON
 import com.example.today.infra.flagPut
 import com.example.today.infra.getMapFromSharedPreferences
 import com.example.today.infra.lastDateGet
-import com.example.today.infra.lastDatePut
 import com.example.today.infra.parseMapFromString
 import com.example.today.room.AppDatabase
 import com.example.today.room.Category
@@ -46,18 +43,18 @@ class TodayActivity : ComponentActivity() {
 
         val db: AppDatabase = AppDatabase.getInstance(this)
         val dateInfoDao = db.DateInfoDao()
-        var date_asset = 0
+        var dateAsset = 0
 
 
         val extras = intent.extras
         if (extras != null) {
-            date_asset =  intent.extras?.get("asset") as Int
+            dateAsset =  intent.extras?.get("asset") as Int
         }
 
-        val dateToday = DateToString(LocalDate.now().plusDays(date_asset.toLong()))
+        val dateToday = dateToString(LocalDate.now().plusDays(dateAsset.toLong()))
         var dateText = getString(R.string.str_today)
 
-        if (date_asset!=0) {
+        if (dateAsset!=0) {
             dateText = dateToday
         }
 
@@ -70,7 +67,7 @@ class TodayActivity : ComponentActivity() {
             editor.apply()
         }
 
-        Log.d("MyDebug", "onCreate : Asset " + date_asset)
+        Log.d("MyDebug", "onCreate : Asset " + dateAsset)
         Log.d("MyDebug", "onCreate : Date " + dateText)
 
 
@@ -95,7 +92,7 @@ class TodayActivity : ComponentActivity() {
 
                     flagPut(this, 0)
                     if (dateInfo != null) {
-                        TodayScreen(viewModel = categoryViewModel, dateInfo, date_asset, dateText)
+                        TodayScreen(viewModel = categoryViewModel, dateInfo, dateAsset, dateText)
                     }
 
 
@@ -200,53 +197,50 @@ class TodayActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onPause() {
         super.onPause()
-        val edit_flag = flagGet(this)
-        if (edit_flag==0)
-        {
-
-        }
-        else         {
+        val editFlag = flagGet(this)
+        if (editFlag!=0)
+         {
             val db: AppDatabase = AppDatabase.getInstance(this)
             val dateInfoDao = db.DateInfoDao()
-            var date_asset = 0
+            var dateAsset = 0
             val extras = intent.extras
             if (extras != null) {
-                date_asset =  intent.extras?.get("asset") as Int
+                dateAsset =  intent.extras?.get("asset") as Int
             }
-            val dateToday = DateToString(LocalDate.now().plusDays(date_asset.toLong()))
-            var dateInfo_map = getMapFromSharedPreferences(this)
-            var dateInfo = getMapFromSharedPreferences(this).toString()
+            val dateToday = dateToString(LocalDate.now().plusDays(dateAsset.toLong()))
+            val dateInfoMap = getMapFromSharedPreferences(this)
+            val dateInfo = getMapFromSharedPreferences(this).toString()
 
-            Log.d("MyDebug", "onPause : Asset " + date_asset)
+            Log.d("MyDebug", "onPause : Asset " + dateAsset)
             Log.d("MyDebug", "onPause : Date " + dateToday)
             Log.d("MyDebug", "onPause : dateInfo " + dateInfo)
 
             GlobalScope.launch {
 
-                val DateExist = dateInfoDao.getIDByDay(dateToday)
-                if (DateExist!=0) {
+                val dateExist = dateInfoDao.getIDByDay(dateToday)
+                if (dateExist!=0) {
                     Log.d("MyDebug", "onPause : UPDATE")
-                    val old_info = parseMapFromString(dateInfoDao.getDateInfoByDay(dateToday))
-                    Log.d("MyDebug", "onPause : old_info" + old_info)
-                    Log.d("MyDebug", "onPause : dateInfo_map" + dateInfo_map)
+                    val oldInfo = parseMapFromString(dateInfoDao.getDateInfoByDay(dateToday))
+                    Log.d("MyDebug", "onPause : old_info" + oldInfo)
+                    Log.d("MyDebug", "onPause : dateInfo_map" + dateInfoMap)
 
-                    val dateInfo_map_merged = dateInfo_map + old_info.filterKeys { it !in dateInfo_map }
+                    val dateInfoMapMerged = dateInfoMap + oldInfo.filterKeys { it !in dateInfoMap }
 
 
 
-                    Log.d("MyDebug", "onPause : dateInfo_map_merged" + dateInfo_map_merged)
+                    Log.d("MyDebug", "onPause : dateInfo_map_merged" + dateInfoMapMerged)
 
-                    dateInfoDao.update(date_info = dateInfo_map_merged.toString(), date = dateToday)
+                    dateInfoDao.update(date_info = dateInfoMapMerged.toString(), date = dateToday)
                 }
                 else
                 {
                     Log.d("MyDebug", "onPause : New Record")
-                    val dateInfo_new = DateInfo(
+                    val dateinfoNew = DateInfo(
                         dID = 0,
                         date = dateToday,
                         date_info = dateInfo
                     )
-                    dateInfoDao.insert(dateInfo_new)
+                    dateInfoDao.insert(dateinfoNew)
                 }
             }
 

@@ -29,3 +29,9 @@ interface DateInfoDao {
     @Query("SELECT dID FROM DateInfo WHERE date=:date")
     fun getIDByDay(date: String): Int
 }
+
+@Dao
+interface AverageDao {
+    @Query("SELECT * FROM AverageInfo")
+    fun getAllAverage(): List<AverageInfo>
+}

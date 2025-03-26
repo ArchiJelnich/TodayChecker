@@ -6,15 +6,15 @@ import androidx.annotation.RequiresApi
 import java.time.LocalDate
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun DateToString(date: LocalDate): String {
-    val string_date = date.dayOfMonth.toString()+"."+date.monthValue.toString()+"."+date.year.toString()
-    return string_date
+fun dateToString(date: LocalDate): String {
+    val stringDate = date.dayOfMonth.toString()+"."+date.monthValue.toString()+"."+date.year.toString()
+    return stringDate
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun StringToDate(date_string: String) : LocalDate
+fun stringToDate(dateString: String) : LocalDate
 {
-    val dateArrayList = date_string.split(".")
+    val dateArrayList = dateString.split(".")
 
     Log.d("MyDebug", "dateArrayList " + dateArrayList.toString())
 
