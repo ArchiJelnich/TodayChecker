@@ -12,6 +12,7 @@ import androidx.compose.material3.Surface
 import androidx.preference.PreferenceManager
 import com.example.today.compose.AddNameScreen
 import com.example.today.compose.GraphScreen
+import com.example.today.infra.checkTheme
 import com.example.today.infra.flagGet
 import com.example.today.infra.flagPut
 import com.example.today.infra.localeChecker

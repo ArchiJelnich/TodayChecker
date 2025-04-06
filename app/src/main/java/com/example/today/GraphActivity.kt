@@ -13,6 +13,7 @@ import com.example.today.compose.GraphScreen
 import com.example.today.infra.AverageByMonths
 import com.example.today.infra.AverageForMonths
 import com.example.today.infra.AverageForWeek
+import com.example.today.infra.checkTheme
 import com.example.today.infra.dateToString
 import com.example.today.infra.localeChecker
 import com.example.today.room.AppDatabase

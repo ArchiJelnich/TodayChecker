@@ -10,6 +10,7 @@ import com.example.today.ui.theme.TodayTheme
 import com.example.today.ui.theme.TodayTheme
 import androidx.compose.material3.*
 import com.example.today.compose.SettingsScreen
+import com.example.today.infra.checkTheme
 import com.example.today.infra.localeChecker
 import com.example.today.room.AppDatabase
 

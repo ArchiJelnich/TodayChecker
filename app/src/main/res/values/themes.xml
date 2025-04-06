@@ -2,4 +2,16 @@
 <resources>
 
     <style name="Theme.Today" parent="android:Theme.Material.Light.NoActionBar" />
+
+
+    <style name="Theme_Light" parent="Theme.Today">
+        <item name="android:background">@color/white</item>
+    </style>>
+
+    <style name="Theme_Dark" parent="Theme.Today">
+        <item name="android:background">@color/black</item>
+    </style>>
+
 </resources>
+
+

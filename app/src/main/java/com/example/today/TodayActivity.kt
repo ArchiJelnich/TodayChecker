@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.preference.PreferenceManager
 import com.example.today.compose.TodayScreen
+import com.example.today.infra.checkTheme
 import com.example.today.infra.dateToString
 import com.example.today.infra.flagGet
 import com.example.today.infra.flagJSON
