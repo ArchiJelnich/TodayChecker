@@ -29,6 +29,10 @@
             android:name=".GraphActivity"
             android:theme="@style/Theme.Today">
         </activity>
+        <activity
+            android:name=".CategoryActivity"
+            android:theme="@style/Theme.Today">
+        </activity>
 
     </application>
 

@@ -19,4 +19,7 @@
     <string name="str_body">Choose a color for each activity, mark the number of slots spent on it per day, and check your stats.
         \nI recommend treating a slot as a time period ranging from half an hour to an hour.
         \nWe are not here for anxious minute-by-minute tracking, but rather for visualizing and evaluating your activity! :)</string>
+    <string name="str_name">Имя</string>
+    <string name="str_type">Пожалуйста введите имя</string>
+    <string name="str_add">Добавить</string>
 </resources>

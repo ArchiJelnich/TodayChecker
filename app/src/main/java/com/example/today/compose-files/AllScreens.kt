@@ -1,5 +1,6 @@
 package com.example.today.compose
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -19,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -30,6 +32,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -46,16 +49,21 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.preference.PreferenceManager
+import com.example.today.CategoryActivity
 import com.example.today.CategoryViewModel
 import com.example.today.R
+import com.example.today.SettingActivity
 import com.example.today.TodayActivity
 import com.example.today.infra.stringToDate
 import com.example.today.infra.flagPut
+import com.example.today.infra.inputCheckerText
 import com.example.today.infra.loadLanguage
 import com.example.today.infra.parseMapFromString
 import com.example.today.infra.saveLanguage
 import com.example.today.infra.setAppLocale
 import com.example.today.infra.updateMap
+import com.example.today.room.Category
 import kotlin.random.Random
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -193,8 +201,9 @@ fun CategoryItem(cName: String, cColor: Long, viewModel: CategoryViewModel, cID:
 
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(viewModel: CategoryViewModel) {
 
     val context = LocalContext.current
     val startLocale = loadLanguage(context)
@@ -266,7 +275,10 @@ fun SettingsScreen() {
             Text(text = if (isLightTheme) stringResource(R.string.str_light) else stringResource(R.string.str_dark), modifier = Modifier.padding(start = 8.dp))
         }
 
-        val categories = listOf("Work", "Study", "Exercise", "Relax", "Hobby", "1", "2", "3", "4", "123", "sdas", "as") // TEMPORARY ZAGLUSHKA
+        //val categories = listOf("Work", "Study", "Exercise", "Relax", "Hobby", "1", "2", "3", "4", "123", "sdas", "as") // TEMPORARY ZAGLUSHKA
+        val categories by viewModel.categories.collectAsState()
+
+
         LazyColumn(
             modifier = Modifier
                 .weight(1f)
@@ -278,7 +290,11 @@ fun SettingsScreen() {
         }
 
         Button(
-            onClick = { /* TODO: Add category */ },
+            onClick = {
+                val intent = Intent(context, CategoryActivity::class.java)
+                intent.putExtra("category_state", "new")
+                context.startActivity(intent)
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
@@ -302,7 +318,7 @@ fun SettingsScreen() {
 
 
 @Composable
-fun CategoryItemWithActions(category: String) {
+fun CategoryItemWithActions(category: Category) {
     val circleColor = Color(Random.nextFloat(), Random.nextFloat(), Random.nextFloat(), 1f)
 
     Row(
@@ -318,7 +334,7 @@ fun CategoryItemWithActions(category: String) {
                 .background(circleColor)
         )
 
-        Text(text = category, modifier = Modifier.padding(start = 16.dp))
+        category.cName?.let { Text(text = it, modifier = Modifier.padding(start = 16.dp)) }
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -438,4 +454,74 @@ fun PeriodGrid(view: String) {
 @Composable
 fun PreviewPeriodScreen() {
     GraphScreen()
+}
+
+///////////////
+
+@Composable
+fun AddNameScreen() {
+    var name by remember { mutableStateOf("") }
+    val randomColor = remember { Color(Random.nextFloat(), Random.nextFloat(), Random.nextFloat(), 1f) }
+    val context = LocalContext.current
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.spacedBy(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text =  stringResource(R.string.str_name),
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            placeholder = { Text(stringResource(R.string.str_type)) },
+            singleLine = true,
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        Box(
+            modifier = Modifier
+                .size(60.dp)
+                .clip(CircleShape)
+                .background(randomColor)
+        )
+
+        Button(
+            onClick = {
+                val checkerResult = inputCheckerText(name)
+                if (checkerResult.second == 1)
+                {
+                    val builder: AlertDialog.Builder = AlertDialog.Builder(context)
+                    builder
+                        .setTitle(checkerResult.first)
+                        .setPositiveButton(R.string.str_OK) { _, _ ->
+                        }
+
+                    val dialog: AlertDialog = builder.create()
+                    dialog.show()
+                }
+                else
+                {
+                    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    val editor = preferences.edit()
+                    val categoryInfo = "${checkerResult.first}:0"
+                    editor.putString("category_new_info", categoryInfo)
+                    editor.apply()
+                    flagPut(context, 100)
+                    val intent = Intent(context, SettingActivity::class.java)
+                    context.startActivity(intent)
+
+                }
+
+            },
+            enabled = name.isNotBlank()
+        ) {
+            Text(stringResource(R.string.str_add))
+        }
+    }
 }
