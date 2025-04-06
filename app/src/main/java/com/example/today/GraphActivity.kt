@@ -14,6 +14,7 @@ import com.example.today.infra.AverageByMonths
 import com.example.today.infra.AverageForMonths
 import com.example.today.infra.AverageForWeek
 import com.example.today.infra.dateToString
+import com.example.today.infra.localeChecker
 import com.example.today.room.AppDatabase
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -22,6 +23,7 @@ import java.time.LocalDate
 class GraphActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
+        localeChecker(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {

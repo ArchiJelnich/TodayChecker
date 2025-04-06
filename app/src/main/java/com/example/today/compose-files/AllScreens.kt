@@ -51,7 +51,10 @@ import com.example.today.R
 import com.example.today.TodayActivity
 import com.example.today.infra.stringToDate
 import com.example.today.infra.flagPut
+import com.example.today.infra.loadLanguage
 import com.example.today.infra.parseMapFromString
+import com.example.today.infra.saveLanguage
+import com.example.today.infra.setAppLocale
 import com.example.today.infra.updateMap
 import kotlin.random.Random
 
@@ -192,6 +195,16 @@ fun CategoryItem(cName: String, cColor: Long, viewModel: CategoryViewModel, cID:
 
 @Composable
 fun SettingsScreen() {
+
+    val context = LocalContext.current
+    val startLocale = loadLanguage(context)
+    var statsLocaleBool = true
+    if (startLocale != "RU")
+    {
+        statsLocaleBool = false
+    }
+
+
     Column(modifier = Modifier.fillMaxSize()) {
         Text(
             text = stringResource(R.string.str_settings),
@@ -212,12 +225,28 @@ fun SettingsScreen() {
         ) {
             Text(text = stringResource(R.string.str_lan))
             Spacer(modifier = Modifier.weight(1f))
-            var isRussian by remember { mutableStateOf(true) }
+            var isRussian by remember { mutableStateOf(statsLocaleBool) }
             Switch(
                 checked = isRussian,
-                onCheckedChange = { isRussian = it }
+                onCheckedChange = {
+                    isRussian = it
+                    var locale = "ENG"
+
+                    if (isRussian){
+                        locale = "RU"
+                    }
+
+
+                    setAppLocale(context, locale)
+                    saveLanguage(context, locale)
+                    Log.d("LangSwitch", "Switch is now: $it")
+                }
             )
-            Text(text = if (isRussian) stringResource(R.string.str_ru) else stringResource(R.string.str_eng), modifier = Modifier.padding(start = 8.dp))
+            Text(text = if (isRussian) {
+                stringResource(R.string.str_ru)
+            } else {
+                stringResource(R.string.str_eng)
+            }, modifier = Modifier.padding(start = 8.dp))
         }
 
         Row(

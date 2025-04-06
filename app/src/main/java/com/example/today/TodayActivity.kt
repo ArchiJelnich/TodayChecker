@@ -20,6 +20,7 @@ import com.example.today.infra.flagJSON
 import com.example.today.infra.flagPut
 import com.example.today.infra.getMapFromSharedPreferences
 import com.example.today.infra.lastDateGet
+import com.example.today.infra.localeChecker
 import com.example.today.infra.parseMapFromString
 import com.example.today.infra.stringToDate
 import com.example.today.room.AppDatabase
@@ -38,6 +39,8 @@ class TodayActivity : ComponentActivity() {
     @SuppressLint("CoroutineCreationDuringComposition")
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        localeChecker(this)
+
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 

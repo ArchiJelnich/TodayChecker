@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Сегодня</string>
+    <string name="str_today">Сегодня</string>
+    <string name="str_settings">Настройки</string>
+    <string name="str_lan">Язык</string>
+    <string name="str_theme">Тема</string>
+    <string name="str_ru">РУ</string>
+    <string name="str_eng">АНГ</string>
+    <string name="str_dark">тёмная</string>
+    <string name="str_light">светлая</string>
+    <string name="str_add_categ">Добавить новую категорию</string>
+    <string name="str_delete_all">Удалить всё</string>
+    <string name="str_grapth">Графики</string>
+    <string name="str_week">Неделя</string>
+    <string name="str_month">Месяц</string>
+    <string name="str_year">Год</string>
+    <string name="str_OK">OK!</string>
+    <string name="str_header">Добро пожаловать в Расслабленный Трекер времени!</string>
+    <string name="str_body">Choose a color for each activity, mark the number of slots spent on it per day, and check your stats.
+        \nI recommend treating a slot as a time period ranging from half an hour to an hour.
+        \nWe are not here for anxious minute-by-minute tracking, but rather for visualizing and evaluating your activity! :)</string>
+</resources>
