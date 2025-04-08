@@ -51,9 +51,13 @@ class CategoryActivity: ComponentActivity() {
         {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val categoryInfo = preferences.getString("category_new_info", ":")
+        Log.d("MyDebug", "categoryInfo " + categoryInfo)
+
         var categoryPair = categoryInfo?.let { stringToPair(it) }
         val categoryPairName = categoryPair?.first.toString()
-        val categoryPairColor = categoryPair?.second?.toLong()
+        val categoryPairColor = categoryPair?.second?.toString()
+
+        Log.d("MyDebug", "categoryPairColor " + categoryPairColor)
 
         val db: AppDatabase = AppDatabase.getInstance(this)
         val categoryDao = db.CategoryDao()

@@ -16,6 +16,7 @@ adaptersVersion = "3.2.0-alpha11"
 roomCompilerVersion = "2.6.1"
 firebaseCrashlyticsBuildtoolsVersion = "3.0.3"
 gsonVersion = "2.12.1"
+foundationLayoutAndroidVersion = "1.7.8"
 
 [libraries]
 androidx-compiler = { module = "androidx.compose.compiler:compiler", version.ref = "compiler" }
@@ -45,6 +46,7 @@ room-compiler = { module = "androidx.room:room-compiler" }
 room-runtime = { module = "androidx.room:room-runtime" }
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtoolsVersion" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gsonVersion" }
+androidx-foundation-layout-android = { group = "androidx.compose.foundation", name = "foundation-layout-android", version.ref = "foundationLayoutAndroidVersion" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -3,6 +3,7 @@ package com.example.today.compose
 import android.app.AlertDialog
 import android.content.Intent
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,12 +38,16 @@ import com.example.today.SettingActivity
 import com.example.today.infra.flagPut
 import com.example.today.infra.inputCheckerText
 import com.example.today.infra.loadTheme
+import com.example.today.infra.toHexString
+import kotlin.math.cos
+import kotlin.math.sin
 import kotlin.random.Random
 
 
 @Composable
 fun AddNameScreen() {
     var name by remember { mutableStateOf("") }
+    var selectedColor by remember { mutableStateOf(Color(Random.nextFloat(), Random.nextFloat(), Random.nextFloat(), 1f)) }
     val randomColor = remember { Color(Random.nextFloat(), Random.nextFloat(), Random.nextFloat(), 1f) }
     val context = LocalContext.current
     val startTheme = loadTheme(context)
@@ -71,6 +76,10 @@ fun AddNameScreen() {
     MaterialTheme(
         colorScheme = colors
     ){
+
+        var showColorPickerDialog by remember { mutableStateOf(false) }
+
+
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
@@ -99,8 +108,24 @@ fun AddNameScreen() {
             modifier = Modifier
                 .size(60.dp)
                 .clip(CircleShape)
-                .background(randomColor)
+                .background(selectedColor)
+                .clickable {
+                    //val intent = Intent(context, ColorPickerActivity::class.java)
+                    //context.startActivity(intent)
+                    showColorPickerDialog = true
+                }
         )
+
+        if (showColorPickerDialog) {
+            ColorPickerDialog(
+                selectedColor = selectedColor,
+                onColorSelected = { color ->
+                    selectedColor = color
+                    showColorPickerDialog = false // Закрыть диалог
+                },
+                onDismissRequest = { showColorPickerDialog = false }
+            )
+        }
 
         Button(
             onClick = {
@@ -120,7 +145,8 @@ fun AddNameScreen() {
                 {
                     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
                     val editor = preferences.edit()
-                    val categoryInfo = "${checkerResult.first}:0"
+                    var newColor = selectedColor.toHexString()
+                    val categoryInfo = "${checkerResult.first}:${newColor}"
                     editor.putString("category_new_info", categoryInfo)
                     editor.apply()
                     flagPut(context, 100)

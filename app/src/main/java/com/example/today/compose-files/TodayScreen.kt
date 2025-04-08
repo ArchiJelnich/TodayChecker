@@ -44,6 +44,7 @@ import com.example.today.infra.flagPut
 import com.example.today.infra.loadTheme
 import com.example.today.infra.parseMapFromString
 import com.example.today.infra.stringToDate
+import com.example.today.infra.toColor
 import com.example.today.infra.updateMap
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -159,7 +160,7 @@ fun TodayScreen(viewModel: CategoryViewModel, dateInfo : String, dateAsset: Int,
 
 
 @Composable
-fun CategoryItem(cName: String, cColor: Long, viewModel: CategoryViewModel, cID: Int, dateInfo : String) {
+fun CategoryItem(cName: String, cColor: String, viewModel: CategoryViewModel, cID: Int, dateInfo: String) {
 
     var initialCount = 0
 
@@ -176,7 +177,9 @@ fun CategoryItem(cName: String, cColor: Long, viewModel: CategoryViewModel, cID:
     //Log.d("MyDebug", " -- CategoryItem -- " + cID + " " + initialCount)
 
     var count by remember { mutableIntStateOf(initialCount) }
-    val circleColor = Color(cColor)
+    Log.d("MyDebug", "cColor = " + cColor)
+    Log.d("MyDebug", "cColor.toColor() = " + cColor.toColor())
+    val circleColor = cColor.toColor()
     val context = LocalContext.current
     //val circleColor = Color(cColor.toLong())
 

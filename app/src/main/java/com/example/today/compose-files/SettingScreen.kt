@@ -54,6 +54,7 @@ import com.example.today.infra.loadTheme
 import com.example.today.infra.saveLanguage
 import com.example.today.infra.saveTheme
 import com.example.today.infra.setAppLocale
+import com.example.today.infra.toColor
 import com.example.today.room.Category
 import kotlin.random.Random
 
@@ -219,6 +220,8 @@ fun SettingsScreen(viewModel: CategoryViewModel) {
 @Composable
 fun CategoryItemWithActions(category: Category) {
     val circleColor = Color(Random.nextFloat(), Random.nextFloat(), Random.nextFloat(), 1f)
+    var newColor = Color.White
+    category.cColor?.let{ newColor = category.cColor.toColor()}
 
     Row(
         modifier = Modifier
@@ -230,7 +233,7 @@ fun CategoryItemWithActions(category: Category) {
             modifier = Modifier
                 .size(40.dp)
                 .clip(RoundedCornerShape(30.dp))
-                .background(circleColor)
+                .background(newColor)
         )
 
         category.cName?.let { Text(text = it, modifier = Modifier.padding(start = 16.dp)) }
