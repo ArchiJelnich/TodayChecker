@@ -2,6 +2,7 @@ package com.example.today.compose
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,20 +39,33 @@ import com.example.today.SettingActivity
 import com.example.today.infra.flagPut
 import com.example.today.infra.inputCheckerText
 import com.example.today.infra.loadTheme
+import com.example.today.infra.toColor
 import com.example.today.infra.toHexString
+import com.example.today.room.Category
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 
 
 @Composable
-fun AddNameScreen() {
+fun AddNameScreen(passedCategory : Category, editFlag: Int) {
+
+
     var name by remember { mutableStateOf("") }
     var selectedColor by remember { mutableStateOf(Color(Random.nextFloat(), Random.nextFloat(), Random.nextFloat(), 1f)) }
     val randomColor = remember { Color(Random.nextFloat(), Random.nextFloat(), Random.nextFloat(), 1f) }
     val context = LocalContext.current
     val startTheme = loadTheme(context)
     var statsThemeBool = true
+    var passedID = 0
+
+    if (editFlag==1)
+    {
+        name = passedCategory.cName.toString()
+        val parsedColor = passedCategory.cColor.toString()
+        selectedColor = parsedColor.toColor()
+        passedID = passedCategory.cID
+    }
 
 
     if (startTheme != "light")
@@ -145,12 +159,18 @@ fun AddNameScreen() {
                 {
                     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
                     val editor = preferences.edit()
-                    var newColor = selectedColor.toHexString()
+                    val newColor = selectedColor.toHexString()
                     val categoryInfo = "${checkerResult.first}:${newColor}"
                     editor.putString("category_new_info", categoryInfo)
                     editor.apply()
                     flagPut(context, 100)
                     val intent = Intent(context, SettingActivity::class.java)
+                    if (editFlag==1)
+                    {
+                        preferences.edit().putInt("cID", passedID).apply()
+                        flagPut(context, 200)
+                    }
+
                     context.startActivity(intent)
 
                 }

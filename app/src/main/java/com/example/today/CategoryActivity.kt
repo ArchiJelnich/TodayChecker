@@ -32,13 +32,34 @@ class CategoryActivity: ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         localeChecker(this)
         super.onCreate(savedInstanceState)
+        var editFlag = 0
+        var passedCategory = Category (
+            cID = 0,
+            cName = "",
+            cColor = "",
+            deletedFlag = true
+        )
 
+
+
+        val extras = intent.extras
+        if (extras != null) {
+            val state = intent.extras?.get("category_state") as String
+            if (state=="edit")
+            {
+                passedCategory = intent.extras?.get("category") as Category
+                editFlag = 1
+            }
+
+
+        }
 
         enableEdgeToEdge()
+
         setContent {
             TodayTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    AddNameScreen()
+                    AddNameScreen(passedCategory, editFlag)
                 }
             }
         }
@@ -47,7 +68,7 @@ class CategoryActivity: ComponentActivity() {
     override fun onPause() {
 
 
-        if (flagGet(this)==100)
+        if (flagGet(this)==100 || flagGet(this)==200 )
         {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val categoryInfo = preferences.getString("category_new_info", ":")
@@ -61,17 +82,41 @@ class CategoryActivity: ComponentActivity() {
 
         val db: AppDatabase = AppDatabase.getInstance(this)
         val categoryDao = db.CategoryDao()
-        GlobalScope.launch {
-            val categoryToAdd = Category(
-                cID = 0,
-                cName = categoryPairName,
-                cColor = categoryPairColor,
-                deletedFlag = false
-            )
-            categoryDao.insertAll(categoryToAdd)
-        }
+       Log.d("MyDebug", "Flag ID " + flagGet(this))
+
+       if  (flagGet(this)==100) {
+
+
+
+           GlobalScope.launch {
+               val categoryToAdd = Category(
+                   cID = 0,
+                   cName = categoryPairName,
+                   cColor = categoryPairColor,
+                   deletedFlag = false
+               )
+               categoryDao.insertAll(categoryToAdd)
+           }
+       }
+
+            if  (flagGet(this)==200) {
+
+                val categoryToUpdate = Category(
+                    cID = preferences.getInt("cID", 0),
+                    cName = categoryPairName.toString(),
+                    cColor = categoryPairColor.toString(),
+                    deletedFlag = false
+                )
+
+                GlobalScope.launch {
+                    Log.d("MyDebug", "To update " + categoryToUpdate)
+                    categoryDao.updateCategory(categoryToUpdate)
+            }}
+
+
 
             flagPut(this, 0)
+            preferences.edit().putInt("cID", -1).apply()
     }
 
         super.onPause()

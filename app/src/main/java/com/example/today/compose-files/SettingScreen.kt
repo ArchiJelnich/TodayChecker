@@ -219,6 +219,7 @@ fun SettingsScreen(viewModel: CategoryViewModel) {
 
 @Composable
 fun CategoryItemWithActions(category: Category) {
+    val context = LocalContext.current
     val circleColor = Color(Random.nextFloat(), Random.nextFloat(), Random.nextFloat(), 1f)
     var newColor = Color.White
     category.cColor?.let{ newColor = category.cColor.toColor()}
@@ -240,7 +241,12 @@ fun CategoryItemWithActions(category: Category) {
 
         Spacer(modifier = Modifier.weight(1f))
 
-        IconButton(onClick = { /* TODO: Edit category */ }) {
+        IconButton(onClick = {
+            val intent = Intent(context, CategoryActivity::class.java)
+            intent.putExtra("category_state", "edit")
+            intent.putExtra("category", category)
+            context.startActivity(intent)
+        }) {
             Icon(Icons.Default.Edit, contentDescription = "Edit")
         }
         IconButton(onClick = { /* TODO: Delete category */ }) {

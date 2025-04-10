@@ -3,14 +3,15 @@ package com.example.today.room
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.io.Serializable
 
 @Entity(tableName = "Category")
-data class Category(
+data class Category (
     @PrimaryKey(autoGenerate = true) var cID: Int,
     @ColumnInfo(name = "cName") val cName: String?,
     @ColumnInfo(name = "cColor") val cColor: String?,
     @ColumnInfo(name = "deletedFlag") val deletedFlag: Boolean?,
-)
+) : Serializable
 
 @Entity(tableName = "DateInfo")
 data class DateInfo(
