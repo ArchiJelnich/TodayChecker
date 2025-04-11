@@ -17,6 +17,8 @@ interface CategoryDao {
     fun deleteAll()
     @Update
     fun updateCategory(category: Category)
+    @Query("UPDATE Category SET deletedFlag = 1 WHERE cID=:cID")
+    fun setDelete(cID: Int)
 }
 
 @Dao

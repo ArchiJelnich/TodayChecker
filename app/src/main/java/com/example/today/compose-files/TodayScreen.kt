@@ -106,7 +106,6 @@ fun TodayScreen(viewModel: CategoryViewModel, dateInfo : String, dateAsset: Int,
             if (firstDayCheck == 0){
                 Button(onClick = {
                     asset--
-                    Log.d("MyDebug", "new asset" + asset)
                     val intent = Intent(context, TodayActivity::class.java)
                     intent.putExtra("asset", asset)
                     context.startActivity(intent)
@@ -123,7 +122,6 @@ fun TodayScreen(viewModel: CategoryViewModel, dateInfo : String, dateAsset: Int,
             if (asset != 0){
                 Button(onClick = {
                     asset++
-                    Log.d("MyDebug", "new asset" + asset)
                     val intent = Intent(context, TodayActivity::class.java)
                     intent.putExtra("asset", asset)
                     context.startActivity(intent)
@@ -177,8 +175,6 @@ fun CategoryItem(cName: String, cColor: String, viewModel: CategoryViewModel, cI
     //Log.d("MyDebug", " -- CategoryItem -- " + cID + " " + initialCount)
 
     var count by remember { mutableIntStateOf(initialCount) }
-    Log.d("MyDebug", "cColor = " + cColor)
-    Log.d("MyDebug", "cColor.toColor() = " + cColor.toColor())
     val circleColor = cColor.toColor()
     val context = LocalContext.current
     //val circleColor = Color(cColor.toLong())

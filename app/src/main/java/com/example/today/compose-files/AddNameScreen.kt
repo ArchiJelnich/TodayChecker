@@ -13,10 +13,16 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -180,5 +186,47 @@ fun AddNameScreen(passedCategory : Category, editFlag: Int) {
         ) {
             Text(stringResource(R.string.str_add))
         }
+        if (editFlag==1) {
+            DeleteIconWithDialog(passedID)
+        }
     }
 }}}
+
+@Composable
+fun DeleteIconWithDialog(passedID : Int) {
+    val context = LocalContext.current
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    IconButton(onClick = { showDialog = true }) {
+        Icon(Icons.Default.Delete, contentDescription = "Delete")
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(stringResource(R.string.str_delete)) },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text(stringResource(R.string.str_no))
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDialog = false
+                    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    val editor = preferences.edit()
+                    editor.apply()
+                    flagPut(context, 500)
+                    val intent = Intent(context, SettingActivity::class.java)
+                    preferences.edit().putInt("cID", passedID).apply()
+                    context.startActivity(intent)
+
+                }) {
+                    Text(stringResource(R.string.str_OK))
+                }
+            },
+
+            )
+    }
+}

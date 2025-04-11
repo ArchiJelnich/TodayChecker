@@ -72,9 +72,6 @@ class TodayActivity : ComponentActivity() {
             editor.apply()
         }
 
-        Log.d("MyDebug", "onCreate : Asset " + dateAsset)
-        Log.d("MyDebug", "onCreate : Date " + dateText)
-
 
         setContent {
             TodayTheme {
@@ -86,10 +83,11 @@ class TodayActivity : ComponentActivity() {
 
 
                     val dateInfo = preferences.getString("date_info_today", "{}")
-                    Log.d("MyDebug", "onCreate : dateInfo " + dateInfo)
                     val categoryDao = db.CategoryDao()
                     val categoryViewModel = CategoryViewModel(categoryDao)
-
+                    GlobalScope.launch {
+                        Log.d("MyDebug", " " + categoryDao.getNotDeleted())
+                    }
 
                     if (lastDateGet(this)!=dateToday) {
                         flagJSON(this)
@@ -217,30 +215,22 @@ class TodayActivity : ComponentActivity() {
             val dateInfoMap = getMapFromSharedPreferences(this)
             val dateInfo = getMapFromSharedPreferences(this).toString()
 
-            Log.d("MyDebug", "onPause : Asset " + dateAsset)
-            Log.d("MyDebug", "onPause : Date " + dateToday)
-            Log.d("MyDebug", "onPause : dateInfo " + dateInfo)
 
             GlobalScope.launch {
 
                 val dateExist = dateInfoDao.getIDByDay(dateToday)
                 if (dateExist!=0) {
-                    Log.d("MyDebug", "onPause : UPDATE")
                     val oldInfo = parseMapFromString(dateInfoDao.getDateInfoByDay(dateToday))
-                    Log.d("MyDebug", "onPause : old_info" + oldInfo)
-                    Log.d("MyDebug", "onPause : dateInfo_map" + dateInfoMap)
+
 
                     val dateInfoMapMerged = dateInfoMap + oldInfo.filterKeys { it !in dateInfoMap }
 
 
 
-                    Log.d("MyDebug", "onPause : dateInfo_map_merged" + dateInfoMapMerged)
-
                     dateInfoDao.update(date_info = dateInfoMapMerged.toString(), date = dateToday)
                 }
                 else
                 {
-                    Log.d("MyDebug", "onPause : New Record")
                     val dateinfoNew = DateInfo(
                         dID = 0,
                         date = dateToday,

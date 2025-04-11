@@ -1,5 +1,8 @@
 package com.example.today.compose
 
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import android.content.Intent
 import android.os.Build
 import android.util.Log
@@ -27,6 +30,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
@@ -95,6 +99,8 @@ fun SettingsScreen(viewModel: CategoryViewModel) {
             onBackground = colorResource(R.color.dark_grey)
         )
     }
+
+
 
     MaterialTheme(
         colorScheme = colors
@@ -202,8 +208,11 @@ fun SettingsScreen(viewModel: CategoryViewModel) {
             Text(stringResource(R.string.str_add_categ))
         }
 
+
         Button(
-            onClick = { /* TODO: Delete all data */ },
+            onClick = {
+
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
@@ -249,9 +258,8 @@ fun CategoryItemWithActions(category: Category) {
         }) {
             Icon(Icons.Default.Edit, contentDescription = "Edit")
         }
-        IconButton(onClick = { /* TODO: Delete category */ }) {
-            Icon(Icons.Default.Delete, contentDescription = "Delete")
-        }
+
+
     }
 }
 

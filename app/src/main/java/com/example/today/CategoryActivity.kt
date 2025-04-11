@@ -68,7 +68,7 @@ class CategoryActivity: ComponentActivity() {
     override fun onPause() {
 
 
-        if (flagGet(this)==100 || flagGet(this)==200 )
+        if (flagGet(this)==100 || flagGet(this)==200 || flagGet(this)==500)
         {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val categoryInfo = preferences.getString("category_new_info", ":")
@@ -113,7 +113,12 @@ class CategoryActivity: ComponentActivity() {
                     categoryDao.updateCategory(categoryToUpdate)
             }}
 
-
+            if  (flagGet(this)==500) {
+                GlobalScope.launch {
+                    Log.d("MyDebug", "To delete " + preferences.getInt("cID", 0))
+                    categoryDao.setDelete(cID =  preferences.getInt("cID", 0))
+                    Log.d("MyDebug", "New  " +  categoryDao.getAll())
+                }}
 
             flagPut(this, 0)
             preferences.edit().putInt("cID", -1).apply()
