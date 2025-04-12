@@ -2,6 +2,7 @@ package com.example.today
 
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -13,6 +14,8 @@ import com.example.today.compose.SettingsScreen
 import com.example.today.infra.checkTheme
 import com.example.today.infra.localeChecker
 import com.example.today.room.AppDatabase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
 class SettingActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -23,6 +26,8 @@ class SettingActivity : ComponentActivity() {
         localeChecker(this)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+
         setContent {
             TodayTheme {
                 Surface(color = MaterialTheme.colorScheme.background) {

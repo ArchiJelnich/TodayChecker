@@ -29,7 +29,9 @@ import com.example.today.room.Category
 import com.example.today.room.CategoryDao
 import com.example.today.room.DateInfo
 import com.example.today.ui.theme.TodayTheme
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -253,14 +255,22 @@ class TodayActivity : ComponentActivity() {
 @RequiresApi(Build.VERSION_CODES.O)
 class CategoryViewModel(private val dao: CategoryDao) : ViewModel() {
 
-    private val _categories = MutableStateFlow<List<Category>>(emptyList())
-    val categories: StateFlow<List<Category>> get() = _categories
+   // private val _categories = MutableStateFlow<List<Category>>(emptyList())
+   // val categories: StateFlow<List<Category>> get() = _categories
+   val categories: Flow<List<Category>> = dao.getNotDeletedFlow()
 
-    init {
-        viewModelScope.launch {
-            _categories.value = dao.getNotDeleted()
+
+  //  init {
+  //      viewModelScope.launch {
+  //          _categories.value = dao.getNotDeleted()
+  //      }
+
+  //  }
+
+    fun deleteAll() {
+        viewModelScope.launch(Dispatchers.IO) {
+            dao.deleteAll()
         }
-
     }
 
 }

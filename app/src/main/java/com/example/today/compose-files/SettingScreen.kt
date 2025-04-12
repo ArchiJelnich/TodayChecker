@@ -49,17 +49,25 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.preference.PreferenceManager
 import com.example.today.CategoryActivity
 import com.example.today.CategoryViewModel
 import com.example.today.R
+import com.example.today.SettingActivity
 import com.example.today.infra.checkTheme
+import com.example.today.infra.flagPut
 import com.example.today.infra.loadLanguage
 import com.example.today.infra.loadTheme
 import com.example.today.infra.saveLanguage
 import com.example.today.infra.saveTheme
 import com.example.today.infra.setAppLocale
 import com.example.today.infra.toColor
+import com.example.today.room.AppDatabase
+import com.example.today.room.AverageInfo
 import com.example.today.room.Category
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
 
@@ -182,7 +190,7 @@ fun SettingsScreen(viewModel: CategoryViewModel) {
         }
 
         //val categories = listOf("Work", "Study", "Exercise", "Relax", "Hobby", "1", "2", "3", "4", "123", "sdas", "as") // TEMPORARY ZAGLUSHKA
-        val categories by viewModel.categories.collectAsState()
+        val categories by viewModel.categories.collectAsState(initial = emptyList())
 
 
         LazyColumn(
@@ -209,17 +217,7 @@ fun SettingsScreen(viewModel: CategoryViewModel) {
         }
 
 
-        Button(
-            onClick = {
-
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
-        ) {
-            Text(stringResource(R.string.str_delete_all))
-        }
+        DeleteAllWithDialog(viewModel = viewModel)
 
 
         BottomPanel()
@@ -263,3 +261,65 @@ fun CategoryItemWithActions(category: Category) {
     }
 }
 
+
+@RequiresApi(Build.VERSION_CODES.O)
+@OptIn(DelicateCoroutinesApi::class)
+@Composable
+fun DeleteAllWithDialog(viewModel: CategoryViewModel) {
+    val context = LocalContext.current
+
+    var showDialog by remember { mutableStateOf(false) }
+
+    Button(
+        onClick = {
+            showDialog = true
+        },
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
+    ) {
+        Text(stringResource(R.string.str_delete_all))
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(stringResource(R.string.str_delete_all_q)) },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text(stringResource(R.string.str_no))
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = {
+                    showDialog = false
+                    viewModel.deleteAll()
+
+                    val db: AppDatabase = AppDatabase.getInstance(context)
+                    val averageDao = db.AverageDao()
+                    val dateInfoDao = db.DateInfoDao()
+
+                    GlobalScope.launch  {
+                        averageDao.deleteAll()
+                        dateInfoDao.deleteAll()
+                    }
+
+
+                    /*
+                    val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                    val editor = preferences.edit()
+                    editor.apply()
+                    flagPut(context, 500)
+                    val intent = Intent(context, SettingActivity::class.java)
+                    preferences.edit().putInt("cID", passedID).apply()
+                    context.startActivity(intent)*/
+
+                }) {
+                    Text(stringResource(R.string.str_OK))
+                }
+            },
+
+            )
+    }
+}

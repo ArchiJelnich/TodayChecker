@@ -130,7 +130,7 @@ fun TodayScreen(viewModel: CategoryViewModel, dateInfo : String, dateAsset: Int,
         }
 
         //val categories_old = listOf("Work", "Study", "Exercise", "Relax", "Hobby", "1", "2", "3", "4", "123", "sdas", "as") // TEMPORARY ZAGLUSHKA
-        val categories by viewModel.categories.collectAsState()
+        val categories by viewModel.categories.collectAsState(initial = emptyList())
 
         LazyColumn(
             modifier = Modifier.weight(1f)

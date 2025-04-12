@@ -10,6 +10,7 @@
     <string name="str_light">светлая</string>
     <string name="str_add_categ">Добавить новую категорию</string>
     <string name="str_delete_all">Удалить всё</string>
+    <string name="str_delete_all_q">Вы уверены, что уходите удалить ВСЕ данные??</string>
     <string name="str_grapth">Графики</string>
     <string name="str_week">Неделя</string>
     <string name="str_month">Месяц</string>

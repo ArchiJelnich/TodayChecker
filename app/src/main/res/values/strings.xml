@@ -10,6 +10,7 @@
     <string name="str_light">light</string>
     <string name="str_add_categ">Add new category</string>
     <string name="str_delete_all">Delete all</string>
+    <string name="str_delete_all_q">Are you sure that you want to delete ALL app info?</string>
     <string name="str_grapth">Graphs</string>
     <string name="str_week">Week</string>
     <string name="str_month">Month</string>

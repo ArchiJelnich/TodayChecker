@@ -1,9 +1,11 @@
 package com.example.today.room
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CategoryDao {
@@ -19,6 +21,9 @@ interface CategoryDao {
     fun updateCategory(category: Category)
     @Query("UPDATE Category SET deletedFlag = 1 WHERE cID=:cID")
     fun setDelete(cID: Int)
+    @Query("SELECT * FROM Category WHERE deletedFlag = 0")
+    fun getNotDeletedFlow(): Flow<List<Category>>
+
 }
 
 @Dao
@@ -39,10 +44,14 @@ interface DateInfoDao {
     fun getIDByMonth(month: Int): List<DateInfo>
     @Query("SELECT * FROM DateInfo WHERE date=:date")
     fun getIDByDate(date: String): DateInfo
+    @Query("DELETE FROM DateInfo")
+    fun deleteAll()
 }
 
 @Dao
 interface AverageDao {
     @Query("SELECT * FROM AverageInfo")
     fun getAllAverage(): List<AverageInfo>
+    @Query("DELETE FROM AverageInfo")
+    fun deleteAll()
 }
