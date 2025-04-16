@@ -24,5 +24,6 @@
     <string name="str_name">Name</string>
     <string name="str_type">Please type a name</string>
     <string name="str_add">Add</string>
+    <string name="str_limit">24 slots are maximum!</string>
     <string name="str_delete">Are you sure that you want to delete category?</string>
 </resources>

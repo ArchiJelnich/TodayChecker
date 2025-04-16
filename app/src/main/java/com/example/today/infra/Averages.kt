@@ -36,7 +36,7 @@ fun AverageByMonths(dateInfoDao : DateInfoDao, year : Int): MutableMap<Int, Doub
 
 
 @RequiresApi(Build.VERSION_CODES.O)
-fun AverageForMonths(dateInfoDao : DateInfoDao, month : Int, year: Int): MutableMap<Int, Double> {
+fun AverageForMonths(dateInfoDao : DateInfoDao, day: Int, month : Int, year: Int): MutableMap<Int, Double> {
 
     val listOfInfo = dateInfoDao.getIDByMonth(month)
     //Log.d("MyDebug", "Average: " + dateInfoDao.getAllDate().toString())
@@ -56,11 +56,10 @@ fun AverageForMonths(dateInfoDao : DateInfoDao, month : Int, year: Int): Mutable
         }
     }
 
-
     val count = YearMonth.of(year, month).lengthOfMonth().toDouble()
 
     finalInfo = finalInfo.mapValues {
-        val result = it.value/ count
+        val result = it.value/ day
         result.toDouble()
     } as MutableMap<Int, Double>
 
@@ -100,7 +99,7 @@ fun AverageForWeek(dateInfoDao : DateInfoDao, date: LocalDate): MutableMap<Int, 
 
 
     finalInfo = finalInfo.mapValues {
-        val result = it.value/7
+        val result = it.value/dateOfWeek
         result.toDouble()
     } as MutableMap<Int, Double>
 

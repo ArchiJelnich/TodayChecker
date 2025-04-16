@@ -24,6 +24,7 @@
     <string name="str_name">Имя</string>
     <string name="str_type">Пожалуйста введите имя</string>
     <string name="str_add">Добавить</string>
+    <string name="str_limit">24 слотов это максимум!</string>
     <string name="str_delete">Вы уверены, что хотите удалить категорию?</string>
 
 </resources>
